@@ -1,14 +1,16 @@
-import { Link } from 'react-router-dom';
-import './Navbar.css';
+import NavbarContainer from './styled/NavbarContainer';
+import NavList from './styled/NavList';
+import NavItem from './styled/NavItem';
+import NavLink from './styled/NavLink';
 
 const Navbar = () => (
-  <nav className="navbar">
-    <ul className="navbar-list">
-      <li><Link to="/">Home</Link></li>
-      <li><Link to="/about">About Us</Link></li>
-      <li><Link to="/contact">Contact Us</Link></li>
-    </ul>
-  </nav>
+  <NavbarContainer>
+    <NavList>
+      <NavItem><NavLink to="/">Home</NavLink></NavItem>
+      <NavItem><NavLink to="/about">About Us</NavLink></NavItem>
+      <NavItem><NavLink to="/contact">Contact Us</NavLink></NavItem>
+    </NavList>
+  </NavbarContainer>
 );
 
 export default Navbar;

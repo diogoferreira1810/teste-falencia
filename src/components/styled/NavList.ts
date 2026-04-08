@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 const NavList = styled.ul`
   display: flex;
+  background: #333;
   justify-content: center;
   gap: 2rem;
   list-style: none;
