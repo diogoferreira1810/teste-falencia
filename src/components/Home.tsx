@@ -67,16 +67,6 @@ const Home = () => {
           </p>
         )}
       </div>
-
-      {/* ======== SECÇÃO 2: Dados da BD ======== */}
-      <p>Dados vindos da API:</p>
-      
-      
-      {/* Se houve erro */}
-      {error && <p>{error}</p>}
-      
-      {/* Se tem dados (não está a carregar e não há erro) */}
-      {!loading && !error && <pre>{JSON.stringify(dados, null, 2)}</pre>}
     </div>
   );
 };
