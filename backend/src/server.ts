@@ -2,7 +2,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import exemploRoutes from './routes/exemplo.js';
-import pool, { testConnection } from './db.js';
 
 dotenv.config();
 
@@ -14,9 +13,6 @@ app.use('/api', exemploRoutes);
 
 const PORT = Number(process.env.PORT) || 3001;
 
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`API a correr em http://localhost:${PORT}`);
-  
-  const connectionTest = await testConnection();
-  console.log(connectionTest.message);
 });
