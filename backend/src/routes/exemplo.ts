@@ -42,7 +42,6 @@ router.get('/dados', async (_req, res) => {
   if (hasPlaceholderConfig) {
     res.json({
       ok: false,
-      message: 'A base de dados ainda está a ser configurada',
       data: [],
     });
 
@@ -57,7 +56,6 @@ router.get('/dados', async (_req, res) => {
     // Se conseguiu, envia resposta com sucesso
     res.json({
       ok: true,
-      message: 'Ligação à base de dados bem sucedida',
       data: result.rows,  // Envia as linhas retornadas pela BD
     });
   } catch (error) {

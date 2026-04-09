@@ -71,8 +71,6 @@ const Home = () => {
       {/* ======== SECÇÃO 2: Dados da BD ======== */}
       <p>Dados vindos da API:</p>
       
-      {/* Enquanto está a carregar */}
-      {loading && <p>A carregar...</p>}
       
       {/* Se houve erro */}
       {error && <p>{error}</p>}
