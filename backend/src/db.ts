@@ -14,7 +14,7 @@ const pool = new Pool({
 export async function testConnection() {
   try {
     const result = await pool.query('SELECT 1 AS ok');
-    return { success: true, message: '✅ Conectado à base de dados com sucesso' };
+    return { success: true, message: '✅ Conectado às fotos de bebe do Plot' };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return { success: false, message: `❌ Erro na conexão: ${errorMessage}` };
