@@ -1,0 +1,200 @@
+
+<style>
+#erd svg { width: 100%; height: auto; }
+</style>
+<div id="erd" style="padding: 1rem 0;"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+
+const diagram = `erDiagram
+  users ||--o{ addresses : has
+  users ||--o{ orders : places
+  users ||--o{ reviews : writes
+  users ||--o{ wishlists : has
+
+  orders ||--|{ order_items : contains
+  orders }o--|| addresses : ships_to
+  orders }o--o| coupons : applies
+
+  order_items }o--|| product_variants : references
+
+  products ||--|{ product_variants : has
+  products }o--|| categories : belongs_to
+  products ||--o{ product_images : has
+  products ||--o{ product_tags : has
+  products ||--o{ reviews : receives
+
+  product_variants }o--|| inventory : tracks
+
+  tags ||--o{ product_tags : used_in
+
+  wishlists ||--o{ wishlist_items : contains
+  wishlist_items }o--|| products : references
+
+  users {
+    uuid id PK
+    string email
+    string full_name
+    string password_hash
+    string role
+    timestamp created_at
+  }
+
+  addresses {
+    uuid id PK
+    uuid user_id FK
+    string line1
+    string city
+    string postal_code
+    string country
+    boolean is_default
+  }
+
+  categories {
+    uuid id PK
+    uuid parent_id FK
+    string name
+    string slug
+    string description
+  }
+
+  products {
+    uuid id PK
+    uuid category_id FK
+    string name
+    string slug
+    text description
+    boolean is_active
+    timestamp created_at
+  }
+
+  product_variants {
+    uuid id PK
+    uuid product_id FK
+    string sku
+    string name
+    decimal price
+    decimal compare_price
+    boolean is_default
+  }
+
+  product_images {
+    uuid id PK
+    uuid product_id FK
+    string url
+    string alt_text
+    int sort_order
+  }
+
+  inventory {
+    uuid id PK
+    uuid variant_id FK
+    int quantity
+    int reserved
+    timestamp updated_at
+  }
+
+  tags {
+    uuid id PK
+    string name
+    string slug
+  }
+
+  product_tags {
+    uuid product_id FK
+    uuid tag_id FK
+  }
+
+  orders {
+    uuid id PK
+    uuid user_id FK
+    uuid address_id FK
+    uuid coupon_id FK
+    string status
+    decimal subtotal
+    decimal shipping
+    decimal total
+    timestamp placed_at
+  }
+
+  order_items {
+    uuid id PK
+    uuid order_id FK
+    uuid variant_id FK
+    int quantity
+    decimal unit_price
+  }
+
+  coupons {
+    uuid id PK
+    string code
+    string type
+    decimal value
+    int max_uses
+    timestamp expires_at
+  }
+
+  reviews {
+    uuid id PK
+    uuid product_id FK
+    uuid user_id FK
+    int rating
+    text body
+    timestamp created_at
+  }
+
+  wishlists {
+    uuid id PK
+    uuid user_id FK
+    string name
+  }
+
+  wishlist_items {
+    uuid id PK
+    uuid wishlist_id FK
+    uuid product_id FK
+    timestamp added_at
+  }
+`;
+
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+
+document.querySelectorAll('#erd svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+
+document.querySelectorAll('#erd svg .row-rect-odd path, #erd svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
