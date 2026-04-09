@@ -23,7 +23,7 @@ const pool = new Pool({
   idleTimeoutMillis: 30_000,
 });
 
-// Log when a new physical connection is made (helpful during development)
+// Log when a new physical connection is made (helpful during development) pipipip
 pool.on('connect', () => {
   console.log('[db] new client connected');
 });
