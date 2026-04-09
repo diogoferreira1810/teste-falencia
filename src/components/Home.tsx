@@ -5,8 +5,18 @@ const Home = () => {
   const [dados, setDados] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [connectionStatus, setConnectionStatus] = useState<{ ok: boolean; message: string } | null>(null);
+  const [connectionLoading, setConnectionLoading] = useState(true);
 
   useEffect(() => {
+    // Verificar status da conexão
+    fetch('http://localhost:3001/api/connection-status')
+      .then((res) => res.json())
+      .then((data) => setConnectionStatus(data))
+      .catch((err) => setConnectionStatus({ ok: false, message: 'Erro ao verificar conexão: ' + err.message }))
+      .finally(() => setConnectionLoading(false));
+
+    // Buscar dados
     getDados()
       .then((data) => setDados(data))
       .catch((fetchError) => {
@@ -18,10 +28,17 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
-      <p>Dados vindos da API:</p>
-      {loading && <p>A carregar...</p>}
-      {error && <p>{error}</p>}
-      {!loading && !error && <pre>{JSON.stringify(dados, null, 2)}</pre>}
+      
+      {/* Status da Conexão */}
+      <div style={{ padding: '10px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '4px' }}>
+        <h2>Status da Conexão</h2>
+        {connectionLoading && <p>A verificar conexão...</p>}
+        {!connectionLoading && connectionStatus && (
+          <p style={{ color: connectionStatus.ok ? 'green' : 'red', fontWeight: 'bold' }}>
+            {connectionStatus.message}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

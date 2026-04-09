@@ -11,4 +11,14 @@ const pool = new Pool({
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
 });
 
+export async function testConnection() {
+  try {
+    const result = await pool.query('SELECT 1 AS ok');
+    return { success: true, message: '✅ Conectado à base de dados com sucesso' };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return { success: false, message: `❌ Erro na conexão: ${errorMessage}` };
+  }
+}
+
 export default pool;
